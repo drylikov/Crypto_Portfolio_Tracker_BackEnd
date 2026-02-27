@@ -1,0 +1,68 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum TransactionType {
+  BUY
+  SELL
+  DEPOSIT
+  WITHDRAW
+}
+
+enum AssetType {
+  CRYPTO
+  FIAT
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  username      String?   @unique
+  passwordHash  String
+  role          Role     @default(USER)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  transactions  Transaction[]
+}
+
+model Asset {
+  id          String     @id @default(uuid())
+  name        String
+  symbol      String     @unique
+  type        AssetType  @default(CRYPTO)
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  deletedAt   DateTime?   
+  coingeckoId String
+
+  transactions Transaction[]
+}
+
+model Transaction {
+  id            String          @id @default(uuid())
+  userId        String
+  assetId       String
+  type          TransactionType
+  quantity      Decimal
+  price         Decimal?
+  fee           Decimal?
+  timestamp     DateTime        @default(now())  
+  comment       String?
+  createdAt     DateTime        @default(now())
+
+  user          User            @relation(fields: [userId], references: [id])
+  asset         Asset           @relation(fields: [assetId], references: [id])
+}
+  

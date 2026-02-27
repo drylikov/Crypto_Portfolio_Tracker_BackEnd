@@ -1,0 +1,4 @@
+
+-- AlterTable
+ALTER TABLE "Transaction" ALTER COLUMN "price" DROP NOT NULL,
+ALTER COLUMN "timestamp" SET DEFAULT CURRENT_TIMESTAMP;
